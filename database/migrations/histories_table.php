@@ -1,32 +1,21 @@
 <?php
-namespace App\Http\Controllers;
 
-use App\Models\History;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-class HistoryController extends Controller
-{
-  public function index()
-  {
-    return History::where('user_id', Auth::id())
-      ->latest()
-      ->take(30)
-      ->get();
-  }
+return new class extends Migration {
+    public function up(): void {
+        Schema::create('histories', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('expression');
+            $table->string('result');
+            $table->timestamps();
+        });
+    }
 
-  public function store(Request $request)
-  {
-    $validated = $request->validate([
-      'expression' => 'required|string',
-      'result' => 'required|string',
-    ]);
-
-    return History::create([
-      'user_id' => Auth::id(),
-      'expression' => $validated['expression'],
-      'result' => $validated['result'],
-    ]);
-  }
-}
-?>
+    public function down(): void {
+        Schema::dropIfExists('histories');
+    }
+};
