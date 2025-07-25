@@ -9,3 +9,5 @@ class User extends Authenticatable
 {
     use HasApiTokens, ...; // Add HasApiTokens
 }
+
+?>
